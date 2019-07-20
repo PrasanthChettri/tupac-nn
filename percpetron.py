@@ -1,36 +1,41 @@
 import math
+from random import randint
 import numpy as np
 import act
-from random import randint
+import loss
  
 
 class perceptron:
-    def __init__(self , inp, train = True, activation = act.sigmoid , lr = 0.003):
+    def __init__(self 
+                 , inp, train = True, 
+                 activation = act.sigmoid ,lr = 0.003 , 
+                 Loss = loss.sample ):
+
         self.i_dim = inp
         self.weights = np.zeros((1, self.i_dim))
         self.bias = randint(1 , 5) 
         self.act = activation
         self.lr = lr
+        self.Loss = Loss
 
-    def feed_forward(self, inp):
+    def assertions(self, inp):
         #SOME assertions
         assert inp.shape == self.weights.shape[::-1],"check the dimensions"
         ass_dt = inp.dtype == np.float64 or inp.dtype  == np.float32
         assert  ass_dt  , "the features should be float"
+
+    def feed_forward(self, inp):
+        #f(x, w, b) = output
+        #d = g(x)(target)
+        self.assertions(inp)
         output = np.matmul(self.weights , inp) + self.bias*1  
         return output
 
     def forward(self, feat, labels):
         output =  self.feed_forward(feat)
         output = self.act.f(output)
-        loss = None
+        loss = self.Loss.p(output , labels)
         return output ,loss
-
-    def performance_check(self, output, target):
-        pass
-
-    def optimizer(self):
-        pass
 
     def __repr__(self):
         return "Wuba luba DUB DUBS , amirite?"
